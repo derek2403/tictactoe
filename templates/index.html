@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div id="game-board">
+        {% for i in range(9) %}
+            <div class="cell" id="cell-{{ i }}" onclick="makeMove({{ i }})">{{ board[i] }}</div>
+        {% endfor %}
+    </div>
+    <div id="status">{{ status }}</div>
+    <button onclick="resetGame()">Reset Game</button>
+    <script>
+        function makeMove(cell) {
+            fetch(`/move/${cell}`, {
+                method: 'POST'
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+
+        function resetGame() {
+            fetch(`/reset`, {
+                method: 'POST'
+            }).then(response => response.json()).then(data => {
+                location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
